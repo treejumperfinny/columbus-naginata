@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Northline Karate Club — discipline, movement, and a place to belong." />
+  <title>Columbus Naginata Club</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Columbus Naginata Club home">
+      <span class="brand-mark">C</span>
+      <span>Columbus<br />Naginata Club</span>
+    </a>
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="#what-is-naginata">01 / Naginata</a>
+      <a href="#about-us">02 / Us</a>
+      <a href="#events">03 / Events</a>
+      <a href="#contact">Contact <span class="arrow">↗</span></a>
+    </nav>
+    <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span></button>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-image"></div>
+      <div class="hero-shade"></div>
+      <div class="hero-content">
+        <p class="eyebrow light">Est. 2022 · Columbus, OH</p>
+        <h1 id="hero-title">Your local<br /><em>dojo.</em></h1>
+        <div class="hero-footer">
+          <p>A budo for every body.<br />Strength with purpose.</p>
+          <a class="circle-link" href="#what-is-naginata" aria-label="Explore Columbus Naginata Club">↓</a>
+        </div>
+      </div>
+      <div class="hero-side-label">薙刀 / Japanese polearm</div>
+    </section>
+
+    <section class="intro section-grid" id="what-is-naginata">
+      <div class="section-index">01 <span>—</span> what is naginata</div>
+      <div class="intro-copy">
+        <p class="eyebrow">The practice</p>
+        <h2>Your new favorite<br /><em>martial art.</em></h2>
+        <p class="large-copy">Naginata is a conversation between body and mind. A practice of attention, precision, and quiet confidence that follows you long after you leave the dojo.</p>
+        <a class="text-link" href="#about-us">Explore the practice <span>↗</span></a>
+      </div>
+      <div class="vertical-note">DISCIPLINE / PRESENCE / RESPECT</div>
+    </section>
+
+    <section class="about section-grid dark-section" id="about-us">
+      <div class="section-index">02 <span>—</span> about us</div>
+      <div class="about-copy">
+        <p class="eyebrow">A place to begin</p>
+        <h2>Come as<br /><em>you are.</em></h2>
+        <p class="large-copy">Columbus Naginata Club is a neighborhood dojo built around a simple idea: everyone deserves a place to get stronger. No experience needed. No ego required.</p>
+        <p class="large-copy"> Driven by one's unwavering commitment to the practice, we began with nothing more than a parking lot and a passion. Today, that spark has grown into a thriving community that has transformed the lives of countless students.</p>
+        
+        <div class="stat-row"><div><strong>2</strong><span>years of practice</span></div><div><strong>3</strong><span>study groups, one community</span></div></div>
+      </div>
+      <div class="about-image image-frame"><span>01 — Sensei Jessica Wilson</span></div>
+    </section>
+
+    <section class="events section-grid" id="events">
+      <div class="section-index">03 <span>—</span> events</div>
+      <div class="events-list">
+        <p class="eyebrow">On the calendar</p>
+        <h2>Keep<br /><em>moving.</em></h2>
+        <article class="event-item"><time>Sep<br /><b>14</b></time><div><p class="event-type">Open mat · all levels</p><h3>Saturday Morning Flow</h3><p>09:00 — 10:30 · Northline Dojo</p></div><span class="event-arrow">↗</span></article>
+        <article class="event-item"><time>Oct<br /><b>03</b></time><div><p class="event-type">Workshop · guests welcome</p><h3>The Art of the Kiai</h3><p>18:30 — 20:00 · Northline Dojo</p></div><span class="event-arrow">↗</span></article>
+        <article class="event-item"><time>Oct<br /><b>19</b></time><div><p class="event-type">Community · annual gathering</p><h3>Northline Fall Shiai</h3><p>All day · McCarren Park</p></div><span class="event-arrow">↗</span></article>
+      </div>
+    </section>
+
+    <section class="support dark-section" id="support">
+      <div class="support-inner">
+        <div><p class="eyebrow">Keep the doors open</p><h2>Practice<br /><em>takes a village.</em></h2></div>
+        <div class="support-copy"><p>Memberships keep our classes accessible, our mats maintained, and our community growing. Support a dojo that belongs to everyone.</p><a class="button-link" href="#contact">Support Northline <span>↗</span></a></div>
+      </div>
+    </section>
+
+    <section class="contact section-grid" id="contact">
+      <div class="section-index">04 <span>—</span> contact</div>
+      <div class="contact-copy"><p class="eyebrow">Your next step</p><h2>Let's<br /><em>connect.</em></h2><p class="large-copy">Questions, first class, good conversation. We would love to hear from you.</p><a class="email-link" href="mailto:hello@northlinekarate.com">hello@northlinekarate.com ↗</a></div>
+      <form class="contact-form" id="contact-form"><label>Name<input type="text" name="name" required placeholder="Your name" /></label><label>Email<input type="email" name="email" required placeholder="you@email.com" /></label><label>Message<textarea name="message" rows="3" required placeholder="How can we help?"></textarea></label><button type="submit" class="submit-button">Send a note <span>↗</span></button><p class="form-status" role="status"></p></form>
+    </section>
+  </main>
+
+  <footer class="site-footer"><span>Northline Karate Club © 2024</span><span>Brooklyn, New York</span><a href="#top">Back to top ↑</a></footer>
+  <script src="script.js"></script>
+</body>
+</html>
