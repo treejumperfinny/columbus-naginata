@@ -1,5 +1,5 @@
 * { box-sizing: border-box; }
-:root { --paper:#ece8df; --ink:#1d1c19; --red:#df4a29; --deep:#202725; --muted:#85847b; --line:rgba(29,28,25,.22); }
+:root { --paper:#ece8df; --ink:#1d1c19; --red:#8f2d2d; --deep:#202725; --muted:#85847b; --line:rgba(29,28,25,.22); }
 html { scroll-behavior:smooth; }
 body { margin:0; background:var(--paper); color:var(--ink); font-family:'DM Sans', sans-serif; font-size:14px; }
 a { color:inherit; text-decoration:none; }
