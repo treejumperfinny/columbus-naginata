@@ -85,11 +85,23 @@
     <section class="contact section-grid" id="contact">
       <div class="section-index">04 <span>—</span> contact</div>
       <div class="contact-copy"><p class="eyebrow">Your next step</p><h2>Let's<br /><em>connect.</em></h2><p class="large-copy">Questions, first class, good conversation. We would love to hear from you.</p><a class="email-link" href="mailto:hello@columbusnaginata.com">columbusnaginata@gmail.com ↗</a></div>
-      <form class="contact-form" id="contact-form"><label>Name<input type="text" name="name" required placeholder="Your name" /></label><label>Email<input type="email" name="email" required placeholder="you@email.com" /></label><label>Message<textarea name="message" rows="3" required placeholder="How can we help?"></textarea></label><button type="submit" class="submit-button">Send a note <span>↗</span></button><p class="form-status" role="status"></p></form>
+      <!-- <form class="contact-form" id="contact-form"><label>Name<input type="text" name="name" required placeholder="Your name" /></label><label>Email<input type="email" name="email" required placeholder="you@email.com" /></label><label>Message<textarea name="message" rows="3" required placeholder="How can we help?"></textarea></label><button type="submit" class="submit-button">Send a note <span>↗</span></button><p class="form-status" role="status"></p></form> -->
     </section>
   </main>
 
   <footer class="site-footer"><span>Columbus Naginata Club © 2024</span><span>Columbus, Ohio</span><a href="#top">Back to top ↑</a></footer>
+
+  <div class="event-modal" id="event-modal" hidden>
+    <div class="event-modal-overlay" data-modal-close></div>
+    <div class="event-modal-panel" role="dialog" aria-modal="true" aria-labelledby="event-modal-title">
+      <button class="event-modal-close" type="button" aria-label="Close event details" data-modal-close>×</button>
+      <p class="event-modal-type"></p>
+      <h3 class="event-modal-title" id="event-modal-title"></h3>
+      <p class="event-modal-meta"></p>
+      <div class="event-modal-description"></div>
+    </div>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
