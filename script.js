@@ -13,12 +13,15 @@ document.querySelectorAll('.main-nav a').forEach((link) => {
   });
 });
 
-document.querySelector('#contact-form').addEventListener('submit', (event) => {
-  event.preventDefault();
-  const status = document.querySelector('.form-status');
-  status.textContent = 'Thanks — we will be in touch soon.';
-  event.target.reset();
-});
+const contactForm = document.querySelector('#contact-form');
+if (contactForm) {
+  contactForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const status = document.querySelector('.form-status');
+    status.textContent = 'Thanks — we will be in touch soon.';
+    event.target.reset();
+  });
+}
 
 // Paste your DatoCMS read-only Content Delivery API token here (Settings > API tokens).
 const DATOCMS_API_TOKEN = '617583127ddd94d00a3167f32c0b5e';
