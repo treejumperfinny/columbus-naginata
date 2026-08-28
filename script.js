@@ -13,6 +13,33 @@ document.querySelectorAll('.main-nav a').forEach((link) => {
   });
 });
 
+document.querySelectorAll('a[href^="#"]').forEach((link) => {
+  link.addEventListener('click', (event) => {
+    const target = document.querySelector(link.getAttribute('href'));
+    if (!target) return;
+
+    event.preventDefault();
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      target.scrollIntoView();
+      return;
+    }
+
+    const startPosition = window.scrollY;
+    const distance = target.getBoundingClientRect().top;
+    const duration = 700;
+    const startTime = performance.now();
+    const easeInOutCubic = (progress) => progress < .5 ? 4 * progress ** 3 : 1 - (-2 * progress + 2) ** 3 / 2;
+
+    function scroll(currentTime) {
+      const progress = Math.min((currentTime - startTime) / duration, 1);
+      window.scrollTo(0, startPosition + distance * easeInOutCubic(progress));
+      if (progress < 1) requestAnimationFrame(scroll);
+    }
+
+    requestAnimationFrame(scroll);
+  });
+});
+
 const contactForm = document.querySelector('#contact-form');
 if (contactForm) {
   contactForm.addEventListener('submit', (event) => {
@@ -71,11 +98,16 @@ function renderEventDescription(container, description) {
   appendSanitizedNodes(template.content, container);
 }
 
+function parseCalendarDate(value) {
+  const [year, month, day] = value.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
 function formatEventDateRange(event) {
-  const start = new Date(event.startDate);
+  const start = parseCalendarDate(event.startDate);
   const startLabel = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   if (event.endDate && event.endDate !== event.startDate) {
-    const endLabel = new Date(event.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const endLabel = parseCalendarDate(event.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     return `${startLabel} – ${endLabel}`;
   }
   return startLabel;
@@ -112,7 +144,7 @@ function createEventItem(event) {
   article.setAttribute('aria-haspopup', 'dialog');
 
   const time = document.createElement('time');
-  const eventDate = new Date(event.startDate);
+  const eventDate = parseCalendarDate(event.startDate);
   time.append(eventDate.toLocaleString('en-US', { month: 'short' }), document.createElement('br'));
   const dayEl = document.createElement('b');
   dayEl.textContent = String(eventDate.getDate()).padStart(2, '0');
@@ -146,6 +178,10 @@ function createEventItem(event) {
   return article;
 }
 
+function updateEventListScrollState(list) {
+  list.classList.toggle('is-scrollable', list.children.length > 5);
+}
+
 async function loadEventsFromDatoCMS() {
   if (!DATOCMS_API_TOKEN || DATOCMS_API_TOKEN === 'YOUR_READ_ONLY_CDA_TOKEN') return;
 
@@ -166,13 +202,15 @@ async function loadEventsFromDatoCMS() {
     if (errors) throw new Error(errors.map((error) => error.message).join(', '));
     if (!data?.allEvents?.length) return;
 
-    const list = document.querySelector('.events-list');
+    const list = document.querySelector('.event-items');
     list.querySelectorAll('.event-item').forEach((item) => item.remove());
     data.allEvents.forEach((event) => list.appendChild(createEventItem(event)));
+    updateEventListScrollState(list);
   } catch (error) {
     // Keep the existing hardcoded events in the markup as a fallback.
     console.error('Could not load events from DatoCMS:', error);
   }
 }
 
+updateEventListScrollState(document.querySelector('.event-items'));
 loadEventsFromDatoCMS();
