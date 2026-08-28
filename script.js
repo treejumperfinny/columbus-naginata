@@ -40,115 +40,6 @@ document.querySelectorAll('a[href^="#"]').forEach((link) => {
   });
 });
 
-const contactModal = document.querySelector('#contact-modal');
-const contactModalTrigger = document.querySelector('.contact-modal-trigger');
-let lastContactFocusedElement = null;
-let turnstileReady = false;
-let turnstileVerified = false;
-let turnstileWidgetId;
-let updateContactSubmitState = () => {};
-
-function renderContactTurnstile() {
-  if (!turnstileReady || turnstileWidgetId !== undefined) return;
-
-  turnstileWidgetId = window.turnstile.render('#contact-turnstile', {
-    sitekey: '0x4AAAAAAEfhQY8rLvI2qSCl',
-    callback: () => {
-      turnstileVerified = true;
-      updateContactSubmitState();
-    },
-    'expired-callback': () => {
-      turnstileVerified = false;
-      updateContactSubmitState();
-    },
-    'error-callback': () => {
-      turnstileVerified = false;
-      updateContactSubmitState();
-    },
-  });
-}
-
-window.onTurnstileLoad = () => {
-  turnstileReady = true;
-  if (!contactModal.hidden) renderContactTurnstile();
-};
-
-function closeContactModal() {
-  contactForm.reset();
-  contactForm.querySelectorAll('.field-error').forEach((error) => {
-    error.textContent = '';
-  });
-  contactForm.querySelector('.form-status').textContent = '';
-  turnstileVerified = false;
-  if (turnstileWidgetId !== undefined) window.turnstile.reset(turnstileWidgetId);
-  updateContactSubmitState();
-  contactModal.hidden = true;
-  document.removeEventListener('keydown', handleContactModalKeydown);
-  if (lastContactFocusedElement) lastContactFocusedElement.focus();
-}
-
-function handleContactModalKeydown(keyEvent) {
-  if (keyEvent.key === 'Escape') closeContactModal();
-}
-
-contactModalTrigger.addEventListener('click', () => {
-  lastContactFocusedElement = document.activeElement;
-  contactModal.hidden = false;
-  renderContactTurnstile();
-  contactModal.querySelector('input[name="name"]').focus();
-  document.addEventListener('keydown', handleContactModalKeydown);
-});
-
-contactModal.querySelectorAll('[data-contact-modal-close]').forEach((element) => {
-  element.addEventListener('click', closeContactModal);
-});
-
-const contactForm = contactModal.querySelector('#contact-form');
-if (contactForm) {
-  const submitButton = contactForm.querySelector('[type="submit"]');
-  updateContactSubmitState = () => {
-    submitButton.disabled = !contactForm.checkValidity() || !turnstileVerified;
-  };
-
-  contactForm.addEventListener('input', updateContactSubmitState);
-  contactForm.querySelectorAll('[required]').forEach((field) => {
-    field.addEventListener('blur', () => {
-      const error = field.parentElement.querySelector('.field-error');
-      error.textContent = field.validity.valueMissing ? 'Field required. Please fill in.' : '';
-    });
-    field.addEventListener('input', () => {
-      if (field.validity.valid) field.parentElement.querySelector('.field-error').textContent = '';
-    });
-  });
-  updateContactSubmitState();
-
-  contactForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const status = contactForm.querySelector('.form-status');
-    submitButton.disabled = true;
-    status.textContent = 'Sending...';
-
-    try {
-      const response = await fetch(contactForm.action, {
-        method: 'POST',
-        body: new FormData(contactForm),
-        headers: { Accept: 'application/json' },
-      });
-
-      if (!response.ok) throw new Error('Formspree could not accept the message.');
-      contactForm.reset();
-      turnstileVerified = false;
-      if (turnstileWidgetId !== undefined) window.turnstile.reset(turnstileWidgetId);
-      status.textContent = 'Thanks. We will be in touch soon.';
-    } catch (error) {
-      status.textContent = 'Your message could not be sent. Please email us directly.';
-      console.error('Could not submit contact form:', error);
-    } finally {
-      updateContactSubmitState();
-    }
-  });
-}
-
 // Paste your DatoCMS read-only Content Delivery API token here (Settings > API tokens).
 const DATOCMS_API_TOKEN = '617583127ddd94d00a3167f32c0b5e';
 
@@ -264,7 +155,7 @@ function createEventItem(event) {
 
   const arrow = document.createElement('span');
   arrow.className = 'event-arrow';
-  arrow.textContent = '↗';
+  arrow.setAttribute('aria-hidden', 'true');
 
   article.append(time, details, arrow);
   article.addEventListener('click', () => openEventModal(event));
@@ -279,6 +170,22 @@ function createEventItem(event) {
 
 function updateEventListScrollState(list) {
   list.classList.toggle('is-scrollable', list.children.length > 5);
+}
+
+function getEventStartMinutes(eventTime) {
+  const match = eventTime.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)/i);
+  if (!match) return Number.MAX_SAFE_INTEGER;
+
+  let hours = Number(match[1]) % 12;
+  if (match[3].toLowerCase() === 'pm') hours += 12;
+  return hours * 60 + Number(match[2] || 0);
+}
+
+function sortEventsChronologically(events) {
+  return [...events].sort((firstEvent, secondEvent) => {
+    const dateDifference = firstEvent.startDate.localeCompare(secondEvent.startDate);
+    return dateDifference || getEventStartMinutes(firstEvent.eventTime) - getEventStartMinutes(secondEvent.eventTime);
+  });
 }
 
 async function loadEventsFromDatoCMS() {
@@ -303,7 +210,7 @@ async function loadEventsFromDatoCMS() {
 
     const list = document.querySelector('.event-items');
     list.querySelectorAll('.event-item').forEach((item) => item.remove());
-    data.allEvents.forEach((event) => list.appendChild(createEventItem(event)));
+    sortEventsChronologically(data.allEvents).forEach((event) => list.appendChild(createEventItem(event)));
     updateEventListScrollState(list);
   } catch (error) {
     // Keep the existing hardcoded events in the markup as a fallback.
