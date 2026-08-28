@@ -1,6 +1,10 @@
 const menuToggle = document.querySelector('.menu-toggle');
 const navigation = document.querySelector('.main-nav');
 
+document.querySelectorAll('svg use[href^="#icon-arrow-"]').forEach((use) => {
+  use.closest('svg').setAttribute('viewBox', '0 0 24 24');
+});
+
 menuToggle.addEventListener('click', () => {
   const isOpen = navigation.classList.toggle('open');
   menuToggle.setAttribute('aria-expanded', String(isOpen));
@@ -156,6 +160,12 @@ function createEventItem(event) {
   const arrow = document.createElement('span');
   arrow.className = 'event-arrow';
   arrow.setAttribute('aria-hidden', 'true');
+  const arrowIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  arrowIcon.setAttribute('viewBox', '0 0 24 24');
+  const arrowUse = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+  arrowUse.setAttribute('href', '#icon-arrow-up-right');
+  arrowIcon.appendChild(arrowUse);
+  arrow.appendChild(arrowIcon);
 
   article.append(time, details, arrow);
   article.addEventListener('click', () => openEventModal(event));
