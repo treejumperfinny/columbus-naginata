@@ -40,13 +40,112 @@ document.querySelectorAll('a[href^="#"]').forEach((link) => {
   });
 });
 
-const contactForm = document.querySelector('#contact-form');
+const contactModal = document.querySelector('#contact-modal');
+const contactModalTrigger = document.querySelector('.contact-modal-trigger');
+let lastContactFocusedElement = null;
+let turnstileReady = false;
+let turnstileVerified = false;
+let turnstileWidgetId;
+let updateContactSubmitState = () => {};
+
+function renderContactTurnstile() {
+  if (!turnstileReady || turnstileWidgetId !== undefined) return;
+
+  turnstileWidgetId = window.turnstile.render('#contact-turnstile', {
+    sitekey: '0x4AAAAAAEfhQY8rLvI2qSCl',
+    callback: () => {
+      turnstileVerified = true;
+      updateContactSubmitState();
+    },
+    'expired-callback': () => {
+      turnstileVerified = false;
+      updateContactSubmitState();
+    },
+    'error-callback': () => {
+      turnstileVerified = false;
+      updateContactSubmitState();
+    },
+  });
+}
+
+window.onTurnstileLoad = () => {
+  turnstileReady = true;
+  if (!contactModal.hidden) renderContactTurnstile();
+};
+
+function closeContactModal() {
+  contactForm.reset();
+  contactForm.querySelectorAll('.field-error').forEach((error) => {
+    error.textContent = '';
+  });
+  contactForm.querySelector('.form-status').textContent = '';
+  turnstileVerified = false;
+  if (turnstileWidgetId !== undefined) window.turnstile.reset(turnstileWidgetId);
+  updateContactSubmitState();
+  contactModal.hidden = true;
+  document.removeEventListener('keydown', handleContactModalKeydown);
+  if (lastContactFocusedElement) lastContactFocusedElement.focus();
+}
+
+function handleContactModalKeydown(keyEvent) {
+  if (keyEvent.key === 'Escape') closeContactModal();
+}
+
+contactModalTrigger.addEventListener('click', () => {
+  lastContactFocusedElement = document.activeElement;
+  contactModal.hidden = false;
+  renderContactTurnstile();
+  contactModal.querySelector('input[name="name"]').focus();
+  document.addEventListener('keydown', handleContactModalKeydown);
+});
+
+contactModal.querySelectorAll('[data-contact-modal-close]').forEach((element) => {
+  element.addEventListener('click', closeContactModal);
+});
+
+const contactForm = contactModal.querySelector('#contact-form');
 if (contactForm) {
-  contactForm.addEventListener('submit', (event) => {
+  const submitButton = contactForm.querySelector('[type="submit"]');
+  updateContactSubmitState = () => {
+    submitButton.disabled = !contactForm.checkValidity() || !turnstileVerified;
+  };
+
+  contactForm.addEventListener('input', updateContactSubmitState);
+  contactForm.querySelectorAll('[required]').forEach((field) => {
+    field.addEventListener('blur', () => {
+      const error = field.parentElement.querySelector('.field-error');
+      error.textContent = field.validity.valueMissing ? 'Field required. Please fill in.' : '';
+    });
+    field.addEventListener('input', () => {
+      if (field.validity.valid) field.parentElement.querySelector('.field-error').textContent = '';
+    });
+  });
+  updateContactSubmitState();
+
+  contactForm.addEventListener('submit', async (event) => {
     event.preventDefault();
-    const status = document.querySelector('.form-status');
-    status.textContent = 'Thanks — we will be in touch soon.';
-    event.target.reset();
+    const status = contactForm.querySelector('.form-status');
+    submitButton.disabled = true;
+    status.textContent = 'Sending...';
+
+    try {
+      const response = await fetch(contactForm.action, {
+        method: 'POST',
+        body: new FormData(contactForm),
+        headers: { Accept: 'application/json' },
+      });
+
+      if (!response.ok) throw new Error('Formspree could not accept the message.');
+      contactForm.reset();
+      turnstileVerified = false;
+      if (turnstileWidgetId !== undefined) window.turnstile.reset(turnstileWidgetId);
+      status.textContent = 'Thanks. We will be in touch soon.';
+    } catch (error) {
+      status.textContent = 'Your message could not be sent. Please email us directly.';
+      console.error('Could not submit contact form:', error);
+    } finally {
+      updateContactSubmitState();
+    }
   });
 }
 

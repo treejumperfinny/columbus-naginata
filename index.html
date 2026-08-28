@@ -99,15 +99,14 @@
 
     <section class="support section-grid dark-section" id="support">
       <div class="section-index">04 <span>—</span> support</div>
-      <div><p class="eyebrow">Keep the doors open</p><h2>Practice<br /><em>takes a village.</em></h2></div>
-      <div class="support-copy"><p>Your support helps keep our classes accessible, our equipment maintained, and our community growing. Support a dojo that belongs to everyone.</p><a class="button-link" href="https://cbusnaginata-shop.fourthwall.com/en-usd">Support Our Club<span>↗</span></a></div>
+      <div><p class="eyebrow">Keep the doors open</p><h2>Practice<br /><em>takes a village.</em></h2> <div class="support-copy"><p>Your support helps keep our classes accessible, our equipment maintained, and our community growing. Support a dojo that belongs to everyone.</p><a class="button-link" href="https://cbusnaginata-shop.fourthwall.com/en-usd">Support Our Club<span>↗</span></a></div></div>
+     
       <a class="section-top-link" href="#top" aria-label="Back to top"><span>Top</span><b aria-hidden="true">↑</b></a>
     </section>
 
     <section class="contact section-grid" id="contact">
       <div class="section-index">05 <span>—</span> contact</div>
-      <div class="contact-copy"><p class="eyebrow">Your next step</p><h2>Let's<br /><em>connect.</em></h2><p class="large-copy">Questions, first class, good conversation. We would love to hear from you.</p><a class="email-link" href="mailto:hello@columbusnaginata.com">Send Us A Message ↗</a></div>
-      <!-- <form class="contact-form" id="contact-form"><label>Name<input type="text" name="name" required placeholder="Your name" /></label><label>Email<input type="email" name="email" required placeholder="you@email.com" /></label><label>Message<textarea name="message" rows="3" required placeholder="How can we help?"></textarea></label><button type="submit" class="submit-button">Send a note <span>↗</span></button><p class="form-status" role="status"></p></form> -->
+      <div class="contact-copy"><p class="eyebrow">Your next step</p><h2>Let's<br /><em>connect.</em></h2><p class="large-copy">Questions, first class, good conversation. We would love to hear from you.</p><button class="email-link contact-modal-trigger" type="button">Send Us A Message ↗</button></div>
       <a class="section-top-link" href="#top" aria-label="Back to top"><span>Top</span><b aria-hidden="true">↑</b></a>
     </section>
   </main>
@@ -125,6 +124,26 @@
     </div>
   </div>
 
+  <div class="contact-modal" id="contact-modal" hidden>
+    <div class="contact-modal-overlay" data-contact-modal-close></div>
+    <div class="contact-modal-panel" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
+      <button class="contact-modal-close" type="button" aria-label="Close contact form" data-contact-modal-close>×</button>
+      <p class="eyebrow">Take the next step</p>
+      <h3 class="contact-modal-title" id="contact-modal-title">Send a<br /><em>message.</em></h3>
+      <form class="contact-form" id="contact-form" action="https://formspree.io/f/moeqqypv" method="POST">
+        <input type="hidden" name="_subject" value="New Columbus Naginata Club website message" />
+        <input class="form-honeypot" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <label>Name<input type="text" name="name" required autocomplete="name" placeholder="Your name" /><span class="field-error" aria-live="polite"></span></label>
+        <label>Email<input type="email" name="email" required autocomplete="email" placeholder="you@email.com" /><span class="field-error" aria-live="polite"></span></label>
+        <label>Message<textarea name="message" rows="3" required placeholder="Got a question? Wanna know more? Send us a line!"></textarea><span class="field-error" aria-live="polite"></span></label>
+        <div class="turnstile-widget" id="contact-turnstile"></div>
+        <button type="submit" class="submit-button" disabled>Send <span>↗</span></button>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" defer></script>
   <script src="script.js"></script>
 </body>
 </html>
